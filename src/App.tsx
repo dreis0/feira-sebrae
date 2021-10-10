@@ -1,39 +1,52 @@
-import { useEffect, useState } from "react";
-import logo from "./logo.svg";
+import { useState } from "react";
+import { createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/material";
 import "./App.css";
-import { useDatabase } from "./database";
-import { Pedido } from "./model/Pedido";
+import { AppBar, SideMenu, ListarPedidosPage, ProdutosPage, NovoPedidoPage } from "./components";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 function App() {
-  var db = useDatabase();
+  const [isDark, setDark] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [pedidos, setPedidos] = useState<Pedido[]>();
-  const [count, setCount] = useState<number>(1);
+  const theme = createTheme({
+    palette: {
+      mode: isDark ? "dark" : "light",
+      background: {},
+    },
+  });
 
-  useEffect(() => {
-    db.pedidos.get().then((res) => {
-      setPedidos(res);
-    });
-
-    db.pedidos.listen((x) => {
-      setPedidos(x);
-    });
-  }, [db.pedidos]);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        {pedidos?.map((x) => (
-          <p key={x.id}> {x.observacao} </p>
-        ))}
-        <button>Teste</button>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <AppBar toggleMenu={toggleMenu} />
+        <SideMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} />
+        <CssBaseline />
+        <Grid container sx={{ width: "100%", margin: 0, padding: "8px" }}>
+          <Switch>
+            <Route path="/pedidos">
+              <ListarPedidosPage />
+            </Route>
+            <Route path="/novo">
+              <NovoPedidoPage />
+            </Route>
+            <Route path="/produtos">
+              <ProdutosPage />
+            </Route>
+            <Route path="*">
+              <ListarPedidosPage />
+            </Route>
+          </Switch>
+        </Grid>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
 export default App;
+
+/*
+ 
+ 
+ */

@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { DatabaseContextProvider } from "./database";
 
+console.log(process.env.PUBLIC_URL)
 ReactDOM.render(
   <React.StrictMode>
     <DatabaseContextProvider value={{}}>
